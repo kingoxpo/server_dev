@@ -39,10 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'login',
-    'todo'
+    'encrypted_fields'
 ]
-
-
 
 FIELD_ENCRYPTION_KEYS = [
     "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b"
@@ -92,10 +90,10 @@ WSGI_APPLICATION = 'server_dev.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'choaws.duckdns.org',
+        'HOST': '52.78.72.64',
         'NAME': 'server_dev',
         'USER': 'root',
-        'PASSWORD': 'admin123!',
+        'PASSWORD': 'sudo',
         'PORT': '3306',
         'OPTIONS': {'charset': 'utf8mb4'},
     }
