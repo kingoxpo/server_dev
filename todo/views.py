@@ -8,14 +8,40 @@ from django.shortcuts import render
 
 class TaskSelect(APIView):
     def post(self, request):
-        tasks = Task.objects.all()
+        user_id = request.data.get('user_id', None)
+        page_number = request.data.get('page_number', None)
+
+        if user_id and not "":
+            # 실습3
+            tasks = Task.objects.filter(user_id=user_id)
+        else:
+            # 실습2
+            tasks = Task.objects.all()
+
+        is_last_page = True
+
+        if page_number is not None and page_number >=0:
+            # 실습3
+            if tasks.count() <= 10:
+                pass
+            elif tasks.count() <= (1 + page_number) * 10:
+                tasks = tasks[page_number * 10:]
+            else:
+                is_last_page = False
+                tasks = tasks[page_number * 10:(1 + page_number) * 10]
+
+        else:
+            # 실습2
+            pass
+
         task_list = []
         for task in tasks:
             task_list.append(dict(id=task.id,
                                   name=task.name,
+                                  userId=user_id,
                                   done=task.done))
 
-        return Response(status=200, data=dict(tasks=task_list))
+        return Response(status=200, data=dict(tasks=task_list, isLastPage=is_last_page))
 
 
 class TaskCreate(APIView):
@@ -24,9 +50,13 @@ class TaskCreate(APIView):
         todo_id = request.data.get('todo_id', '')
         name = request.data.get('name', '')
 
-        Task.objects.create(user_id=user_id, id=todo_id, name=name)
+        if todo_id:
+            # 실습 2
+            task = Task.objects.create(user_id=user_id, id=todo_id, name=name)
+        else:
+            task = Task.objects.create(user_id=user_id, name=name)
 
-        return Response()
+        return Response(data=dict(id=task.id))
 
 
 class TaskToggle(APIView):
